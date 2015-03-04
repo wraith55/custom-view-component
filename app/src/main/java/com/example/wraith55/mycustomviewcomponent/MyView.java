@@ -15,7 +15,11 @@ import java.lang.reflect.Array;
 
 
 /**
- * TODO: document your custom view class.
+ * Author: Ronald Shaw
+ * This class is modified from the Android Studio example view class
+ * I have written logic in an overridden method, onTouchEvent
+ * This logic detects when the user makes a circle gesture on the screen
+ * I have not touched much of the class as it was useful to demonstrate
  */
 public class MyView extends View {
     private String mExampleString; // TODO: use a default from R.string...
@@ -119,26 +123,37 @@ public class MyView extends View {
 
 
     @Override
+    /**
+     * detects user input from touching the screen
+     * This is the method where all logic pertaining to detecting circle is written
+     *
+     * event - a variable set by user when touching anywhere on the screen
+     */
     public boolean onTouchEvent(MotionEvent event) {
         float x, y;
+
+        //when user first presses down
         if(event.getActionMasked() == MotionEvent.ACTION_DOWN){
-            //test
             x = event.getX();
             y = event.getY();
-            setExampleString("PRESSED");
+            //setExampleString("PRESSED");
+
+            //initialize all data to the first point
             for(int i=0; i<6; i++){
                 data[i][0] = x;
                 data[i][1] = y;
             }
-
-            data[0][0] = event.getX();
-            data[0][1] = event.getY();
         }
+
+        //whenever user moves while holding down
         if(event.getAction() == MotionEvent.ACTION_MOVE){
+           //get coordinates first
            x = event.getX();
            y = event.getY();
-           setExampleString("MOVED " + x + "," + y);
+           //setExampleString("MOVED " + x + "," + y);
 
+           //always check if point is furthest up, down, left, or right
+           //lower y is up, lower x is left
            if(x > data[1][0]){
                data[1][0] = x;
                data[1][1] = y;
@@ -157,25 +172,27 @@ public class MyView extends View {
            }
 
         }
+        //happens when user releases hold
         if(event.getAction() == MotionEvent.ACTION_UP){
-
-            setExampleString("UP!");
+            //default is no circle detected, this text will immediately change if circle is detected
+            setExampleString("No circle detected");
+            //not really using release data but take it in for good measure
             data[5][0] = event.getX();
             data[5][1] = event.getY();
-
+            //basically makes sure that none of the extremes are the same as each other
             if(data[1][1] > data[4][1]){
-                setExampleString("check1");
+                //setExampleString("check1");
                 if(data[2][0] < data[1][0]){
-                    setExampleString("check2");
+                    //setExampleString("check2");
                     if(data[3][1] < data[2][1]){
-                        setExampleString("check3");
+                        //setExampleString("check3");
                         if (data[5][0] > data[3][0]){
-                            setExampleString("check4");
+                            //setExampleString("check4");
                             if(data[4][1] < data[3][1]){
+                                //if all extremes are singular, then a circle is detected
                                 setExampleString("CIRCLE!");
-                            }
-                            else if(data[4][1] > data[3][1]){
-                                setExampleString(data[4][0]+","+data[4][1]+" > "+data[3][0]+","+data[3][1]);
+                                //setting example string is just a convenient example, any action
+                                //can be taken when circle is detected
                             }
                         }
                     }
